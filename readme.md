@@ -1,4 +1,4 @@
-# Получаем и выводим весь список контакстов в виде таблицы (console.table)
+# Список контактов
 
 node index.js --action="list" - https://ibb.co/CJm01YD
 
