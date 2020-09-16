@@ -1,27 +1,25 @@
-const Users = require("./contacts");
-const argv = require("yargs").argv;
+const dotenv = require("dotenv");
+dotenv.config();
+const PORT = process.env.PORT || 4040;
+const Contacts = require("./contacts");
 
-function invokeAction({ action, id, name, email, phone }) {
-  switch (action) {
-    case "list":
-      Users.listContacts().then((users) => console.table(users));
-      break;
+const express = require("express");
+const app = express();
 
-    case "get":
-      Users.getContactById(id).then((user) => console.log(user));
-      break;
+app.use((req, res, next) => {
+  console.log("first middleware");
+  next();
+});
 
-    case "add":
-      Users.addContact(name, email, phone).then((user) => console.log(user));
-      break;
+app.use((req, res, next) => {
+  console.log("second middleware");
+  next();
+});
 
-    case "remove":
-      Users.removeContact(id).then((users) => console.table(users));
-      break;
+app.get("/contacts", async (req, res) => {
+  const contacts = await Contacts.listContacts();
+  res.setHeader("Content-Type", "application/json");
+  res.send(JSON.stringify(contacts));
+});
 
-    default:
-      console.warn("\x1B[31m Unknown action type!");
-  }
-}
-
-invokeAction(argv);
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
