@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const contacts = require("../../contacts");
 const Contacts = require("../../contacts");
 const contactsRouter = Router();
 
@@ -6,7 +7,6 @@ const contactsRouter = Router();
 
 contactsRouter.get("/", async (req, res) => {
   const contacts = await Contacts.listContacts();
-  res.setHeader("Content-Type", "application/json");
   res.status(200).json(contacts);
 });
 
@@ -14,9 +14,8 @@ contactsRouter.get("/", async (req, res) => {
 
 contactsRouter.get("/:contactId", async (req, res) => {
   const { contactId } = req.params;
-  if (contactId) {
-    const contact = await Contacts.getContactById(contactId);
-    res.setHeader("Content-Type", "application/json");
+  const contact = await Contacts.getContactById(+contactId);
+  if (contact) {
     res.status(200).json(contact);
     return;
   }
@@ -28,17 +27,17 @@ contactsRouter.get("/:contactId", async (req, res) => {
 contactsRouter.post("/", async (req, res) => {
   const { name, email, phone } = req.body;
   if (typeof name !== "string" || name === "") {
-    res.status(400).send("Missing required name");
+    res.status(400).send("Missing required name field");
     return;
   }
 
   if (typeof email !== "string" || email === "") {
-    res.status(400).send("Missing required email");
+    res.status(400).send("Missing required email field");
     return;
   }
 
   if (typeof phone !== "string" || phone === "") {
-    res.status(400).send("Missing required phone");
+    res.status(400).send("Missing required phone field");
     return;
   }
 
@@ -50,8 +49,10 @@ contactsRouter.post("/", async (req, res) => {
 
 contactsRouter.delete("/:contactId", async (req, res) => {
   const { contactId } = req.params;
-  if (contactId) {
-    await Contacts.removeContact(+contactId);
+  const getContact = await Contacts.getContactById(+contactId);
+
+  if (getContact) {
+    const contact = await Contacts.removeContact(+contactId);
     res.status(200).send("Contact deleted");
     return;
   }
