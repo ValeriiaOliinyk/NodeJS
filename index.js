@@ -1,25 +1,21 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const PORT = process.env.PORT || 4040;
-const Contacts = require("./contacts");
 
 const express = require("express");
+const contactsRouter = require("./api/contacts/router");
+
 const app = express();
 
 app.use((req, res, next) => {
-  console.log("first middleware");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "*");
   next();
 });
 
-app.use((req, res, next) => {
-  console.log("second middleware");
-  next();
-});
+app.use(express.json());
 
-app.get("/contacts", async (req, res) => {
-  const contacts = await Contacts.listContacts();
-  res.setHeader("Content-Type", "application/json");
-  res.send(JSON.stringify(contacts));
-});
+app.use("/contacts", contactsRouter);
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
