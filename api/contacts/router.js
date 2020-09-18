@@ -19,30 +19,20 @@ contactsRouter.get("/:contactId", async (req, res) => {
     res.status(200).json(contact);
     return;
   }
-  res.status(404).send("Not found");
+  res.status(404).json({ message: "Not found" });
 });
 
 // POST /api/contacts
 
 contactsRouter.post("/", async (req, res) => {
   const { name, email, phone } = req.body;
-  if (typeof name !== "string" || name === "") {
-    res.status(400).send("Missing required name field");
+  if (name && email && phone) {
+    const contact = await Contacts.addContact(name, email, phone);
+    res.status(201).json(contact);
     return;
   }
-
-  if (typeof email !== "string" || email === "") {
-    res.status(400).send("Missing required email field");
-    return;
-  }
-
-  if (typeof phone !== "string" || phone === "") {
-    res.status(400).send("Missing required phone field");
-    return;
-  }
-
-  const contact = await Contacts.addContact(name, email, phone);
-  res.status(201).json(contact);
+  res.status(400).json({ message: "Missing required name field" });
+  return;
 });
 
 // DELETE /api/contacts/:contactId
@@ -53,12 +43,30 @@ contactsRouter.delete("/:contactId", async (req, res) => {
 
   if (getContact) {
     const contact = await Contacts.removeContact(+contactId);
-    res.status(200).send("Contact deleted");
+    res.status(200).json({ message: "Contact deleted" });
     return;
   }
-  res.status(404).send("Not found");
+  res.status(404).json({ message: "Not found" });
 });
 
 // PATCH /api/contacts/:contactId
+
+contactsRouter.patch("/:contactId", async (req, res) => {
+  const { contactId } = req.params;
+  const contact = await Contacts.getContactById(+contactId);
+
+  if (!contact) {
+    res.status(400).json({ message: `Missing fields` });
+    return;
+  }
+
+  if (contact) {
+    const updatedContact = await Contacts.updateContact(+contactId, req.body);
+    res.status(200).json(updatedContact);
+    return;
+  }
+
+  res.status(404).json({ message: "Not found" });
+});
 
 module.exports = contactsRouter;
