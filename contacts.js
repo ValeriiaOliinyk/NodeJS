@@ -30,9 +30,27 @@ async function addContact(name, email, phone) {
   return newUser;
 }
 
+async function updateContact(id, body) {
+  const contacts = await listContacts();
+  let contactIndex = null;
+  contacts.forEach((contact, index) => {
+    if (+contact.id === id) {
+      contactIndex = index;
+    }
+  });
+  contacts[contactIndex] = {
+    ...contacts[contactIndex],
+    ...body,
+  };
+  const contactData = JSON.stringify(contacts);
+  await fs.writeFile(contactsPath, contactData);
+  return contacts[contactIndex];
+}
+
 module.exports = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
+  updateContact,
 };

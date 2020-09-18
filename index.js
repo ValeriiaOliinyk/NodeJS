@@ -1,27 +1,19 @@
-const Users = require("./contacts");
-const argv = require("yargs").argv;
+const dotenv = require("dotenv");
+dotenv.config();
+const PORT = process.env.PORT || 4040;
 
-function invokeAction({ action, id, name, email, phone }) {
-  switch (action) {
-    case "list":
-      Users.listContacts().then((users) => console.table(users));
-      break;
+const express = require("express");
+const contactsRouter = require("./api/contacts/router");
 
-    case "get":
-      Users.getContactById(id).then((user) => console.log(user));
-      break;
+const app = express();
 
-    case "add":
-      Users.addContact(name, email, phone).then((user) => console.log(user));
-      break;
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  next();
+});
 
-    case "remove":
-      Users.removeContact(id).then((users) => console.table(users));
-      break;
+app.use(express.json());
 
-    default:
-      console.warn("\x1B[31m Unknown action type!");
-  }
-}
+app.use("/contacts", contactsRouter);
 
-invokeAction(argv);
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
