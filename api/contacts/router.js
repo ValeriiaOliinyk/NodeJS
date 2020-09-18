@@ -54,9 +54,10 @@ contactsRouter.delete("/:contactId", async (req, res) => {
 contactsRouter.patch("/:contactId", async (req, res) => {
   const { contactId } = req.params;
   const contact = await Contacts.getContactById(+contactId);
+  const keys = Object.keys(req.body);
 
-  if (!contact) {
-    res.status(400).json({ message: `Missing fields` });
+  if (keys.length === 0) {
+    res.status(400).json({ message: "Missing fields" });
     return;
   }
 
