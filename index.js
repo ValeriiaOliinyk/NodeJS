@@ -4,16 +4,29 @@ const PORT = process.env.PORT || 4040;
 
 const express = require("express");
 const contactsRouter = require("./api/contacts/router");
+const mongoose = require("mongoose");
 
-const app = express();
+const runServer = async () => {
+  try {
+    await mongoose.connect(process.env.DB_URI, { useUnifiedTopology: true });
+    console.log("Database connection successful");
+  } catch (error) {
+    console.log("Error");
+    process.exit(1);
+  }
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  next();
-});
+  const app = express();
 
-app.use(express.json());
+  app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    next();
+  });
 
-app.use("/contacts", contactsRouter);
+  app.use(express.json());
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+  app.use("/contacts", contactsRouter);
+
+  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+};
+
+runServer();
