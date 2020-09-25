@@ -24,6 +24,7 @@
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "http": "0.0.1-security",
+    "mongoose": "^5.10.6",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.4",
     "yargs": "^15.4.1"

@@ -1,73 +1,31 @@
 const { Router } = require("express");
-const contacts = require("../../contacts");
-const Contacts = require("../../contacts");
+const {
+  getContactsController,
+  getContactController,
+  createContactsController,
+  updateContactsController,
+  deleteContactController,
+} = require("./contacts-controller");
+
 const contactsRouter = Router();
 
-// GET /api/contacts
+// GET
 
-contactsRouter.get("/", async (req, res) => {
-  const contacts = await Contacts.listContacts();
-  res.status(200).json(contacts);
-});
+contactsRouter.get("/", getContactsController);
 
-//  GET /api/contacts/:contactId
+// GET /:contactId
+contactsRouter.get("/:contactId", getContactController);
 
-contactsRouter.get("/:contactId", async (req, res) => {
-  const { contactId } = req.params;
-  const contact = await Contacts.getContactById(+contactId);
-  if (contact) {
-    res.status(200).json(contact);
-    return;
-  }
-  res.status(404).json({ message: "Not found" });
-});
+// POST
 
-// POST /api/contacts
+contactsRouter.post("/", createContactsController);
 
-contactsRouter.post("/", async (req, res) => {
-  const { name, email, phone } = req.body;
-  if (name && email && phone) {
-    const contact = await Contacts.addContact(name, email, phone);
-    res.status(201).json(contact);
-    return;
-  }
-  res.status(400).json({ message: "Missing required name field" });
-  return;
-});
+// PATCH
 
-// DELETE /api/contacts/:contactId
+contactsRouter.patch("/", updateContactsController);
 
-contactsRouter.delete("/:contactId", async (req, res) => {
-  const { contactId } = req.params;
-  const getContact = await Contacts.getContactById(+contactId);
+// DELETE
 
-  if (getContact) {
-    const contact = await Contacts.removeContact(+contactId);
-    res.status(200).json({ message: "Contact deleted" });
-    return;
-  }
-  res.status(404).json({ message: "Not found" });
-});
-
-// PATCH /api/contacts/:contactId
-
-contactsRouter.patch("/:contactId", async (req, res) => {
-  const { contactId } = req.params;
-  const contact = await Contacts.getContactById(+contactId);
-  const keys = Object.keys(req.body);
-
-  if (keys.length === 0) {
-    res.status(400).json({ message: "Missing fields" });
-    return;
-  }
-
-  if (contact) {
-    const updatedContact = await Contacts.updateContact(+contactId, req.body);
-    res.status(200).json(updatedContact);
-    return;
-  }
-
-  res.status(404).json({ message: "Not found" });
-});
+contactsRouter.delete("/:contactId", deleteContactController);
 
 module.exports = contactsRouter;
