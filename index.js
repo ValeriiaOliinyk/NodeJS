@@ -2,11 +2,14 @@ const dotenv = require("dotenv");
 dotenv.config();
 const PORT = process.env.PORT || 4040;
 
+const Contacts = require("./api/contacts/contacts.model");
+
 const express = require("express");
 const contactsRouter = require("./api/contacts/router");
 const mongoose = require("mongoose");
 
 const runServer = async () => {
+  console.log(Contacts);
   try {
     await mongoose.connect(process.env.DB_URI, { useUnifiedTopology: true });
     console.log("Database connection successful");
