@@ -20,7 +20,7 @@ const loginController = async (req, res, next) => {
     const {
       body: { email, password },
     } = req;
-    const user = UserDB.findUserByEmail({ email });
+    const user = await UserDB.findUserByEmail({ email });
     if (!user) {
       return res.status(404).send(`Email or password is wrong`);
     }
