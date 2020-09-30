@@ -2,14 +2,13 @@ const dotenv = require("dotenv");
 dotenv.config();
 const PORT = process.env.PORT || 4040;
 
-const Contacts = require("./api/contacts/contacts.model");
+const authRouter = require("./api/auth/auth.router");
 
 const express = require("express");
 const contactsRouter = require("./api/contacts/router");
 const mongoose = require("mongoose");
 
 const runServer = async () => {
-  console.log(Contacts);
   try {
     await mongoose.connect(process.env.DB_URI, { useUnifiedTopology: true });
     console.log("Database connection successful");
@@ -27,6 +26,7 @@ const runServer = async () => {
 
   app.use(express.json());
 
+  app.use("/auth", authRouter);
   app.use("/contacts", contactsRouter);
 
   app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
