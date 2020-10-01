@@ -1,5 +1,6 @@
 const UserDB = require("./auth.model");
 const bcrypt = require("bcrypt");
+const { createVerificationToken } = require("../../services/token.service");
 
 const registrationController = async (req, res, next) => {
   try {
@@ -11,6 +12,10 @@ const registrationController = async (req, res, next) => {
     });
     res.status(201).send("Created");
   } catch (error) {
+    if (error.code === 11000) {
+      res.status(409).send("Email in use");
+    }
+    res.status(400).send("Ошибка от Joi или другой валидационной библиотеки");
     next(error);
   }
 };
@@ -26,9 +31,10 @@ const loginController = async (req, res, next) => {
     }
     const isPasswordsEqual = await bcrypt.compare(password, user.password);
     if (!isPasswordsEqual) {
-      return res.status(404).send(`Email or password is wrong`);
+      return res.status(404).send(`Wrong password`);
     }
-    res.json({ email: user.email, id: user._id });
+    const access_token = await createVerificationToken({ id: user._id });
+    res.json({ access_token });
   } catch (error) {
     next(error);
   }

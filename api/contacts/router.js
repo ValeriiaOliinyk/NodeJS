@@ -6,12 +6,15 @@ const {
   updateContactsController,
   deleteContactController,
 } = require("./contacts-controller");
+const {
+  checkAuthTokenMiddleware,
+} = require("../../middlewares/auth.middleware");
 
 const contactsRouter = Router();
 
 // GET
 
-contactsRouter.get("/", getContactsController);
+contactsRouter.get("/", checkAuthTokenMiddleware, getContactsController);
 
 // GET /:contactId
 contactsRouter.get("/:contactId", getContactController);
