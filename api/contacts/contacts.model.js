@@ -20,8 +20,13 @@ class Contacts {
     this.db = mongoose.model("Contacts", contactSchema);
   }
 
-  getContacts = async () => {
-    return await this.db.find();
+  getContacts = async (query) => {
+    const { limit, page, ...otherQuery } = query;
+    const skipItems = (page - 1) * limit;
+    return await this.db
+      .find(otherQuery)
+      .skip(skipItems)
+      .limit(+limit);
   };
 
   getContactById = async (contactId) => {
