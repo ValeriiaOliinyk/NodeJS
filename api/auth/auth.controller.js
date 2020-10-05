@@ -53,6 +53,25 @@ const loginController = async (req, res, next) => {
   }
 };
 
+const logoutController = async (req, res, next) => {
+  try {
+    const { user: id } = req;
+    const currentUserById = await UserDB.findUserById(id);
+    if (!currentUserById) {
+      res.status(401).json({ message: "Not authorized" });
+      return;
+    }
+
+    await UserDB.updateUser(id, {
+      token: "",
+    });
+
+    return res.status(204).send("No Content");
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getCurrentUserController = async (req, res, next) => {
   try {
     const { user: id } = req;
@@ -74,4 +93,5 @@ module.exports = {
   registrationController,
   loginController,
   getCurrentUserController,
+  logoutController,
 };
