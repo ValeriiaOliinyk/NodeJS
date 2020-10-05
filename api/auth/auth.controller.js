@@ -31,10 +31,40 @@ const loginController = async (req, res, next) => {
     }
     const isPasswordsEqual = await bcrypt.compare(password, user.password);
     if (!isPasswordsEqual) {
-      return res.status(404).send(`Wrong password`);
+      return res.status(401).send(`Email or password is wrong`);
     }
     const access_token = await createVerificationToken({ id: user._id });
-    res.json({ access_token });
+
+    await UserDB.updateUser(user._id, {
+      token: access_token,
+    });
+
+    res.status(200).json({
+      token: access_token,
+      user: {
+        email: user.email,
+        subscription: user.subscription,
+      },
+    });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ message: "Ошибка от Joi или другой валидационной библиотеки" });
+  }
+};
+
+const getCurrentUserController = async (req, res, next) => {
+  try {
+    const { user: id } = req;
+    const currentUserById = await UserDB.findUserById(id);
+    if (!currentUserById.token) {
+      res.status(401).json({ message: "Not authorized" });
+      return;
+    }
+    res.status(200).json({
+      email: currentUserById.email,
+      subscription: currentUserById.subscription,
+    });
   } catch (error) {
     next(error);
   }
@@ -43,4 +73,5 @@ const loginController = async (req, res, next) => {
 module.exports = {
   registrationController,
   loginController,
+  getCurrentUserController,
 };

@@ -12,6 +12,7 @@ const runServer = async () => {
   try {
     await mongoose.connect(process.env.DB_URI, {
       useUnifiedTopology: true,
+      useCreateIndex: true,
       useNewUrlParser: true,
     });
     console.log("Database connection successful");
@@ -31,6 +32,7 @@ const runServer = async () => {
 
   app.use("/auth", authRouter);
   app.use("/contacts", contactsRouter);
+  app.use("/users", authRouter);
 
   app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 };
