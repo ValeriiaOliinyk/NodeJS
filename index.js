@@ -1,12 +1,11 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const PORT = process.env.PORT || 4040;
-
-const authRouter = require("./api/auth/auth.router");
-
 const express = require("express");
-const contactsRouter = require("./api/contacts/router");
 const mongoose = require("mongoose");
+const authRouter = require("./api/auth/auth.router");
+const contactsRouter = require("./api/contacts/router");
+const usersRouter = require("./api/users/users.router");
 
 const runServer = async () => {
   try {
@@ -32,7 +31,7 @@ const runServer = async () => {
 
   app.use("/auth", authRouter);
   app.use("/contacts", contactsRouter);
-  app.use("/users", authRouter);
+  app.use("/users", usersRouter);
 
   app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 };

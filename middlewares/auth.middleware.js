@@ -1,5 +1,5 @@
 const { verifyToken } = require("../services/token.service");
-const User = require("../api/auth/auth.model");
+const User = require("../api/users/users.model");
 
 const checkAuthTokenMiddleware = async (req, res, next) => {
   try {
@@ -21,13 +21,6 @@ const checkAuthTokenMiddleware = async (req, res, next) => {
   }
 };
 
-// const checkUserRole = (roles) => (req, res, next) => {
-//   const isValidRole = roles.includes(req.userInfo.role);
-//   if (isValidRole) return next();
-//   res.status(403).send("Forbidden");
-// };
-
 module.exports = {
   checkAuthTokenMiddleware,
-  // checkUserRole,
 };

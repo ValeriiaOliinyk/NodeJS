@@ -1,4 +1,4 @@
-const UserDB = require("./auth.model");
+const UserDB = require("../users/users.model");
 const bcrypt = require("bcrypt");
 const { createVerificationToken } = require("../../services/token.service");
 
@@ -6,11 +6,16 @@ const registrationController = async (req, res, next) => {
   try {
     const { body } = req;
     const hashedPassword = await bcrypt.hash(body.password, +process.env.SALT);
-    await UserDB.createUser({
+    const newUser = await UserDB.createUser({
       ...body,
       password: hashedPassword,
     });
-    res.status(201).send("Created");
+    res.status(201).json({
+      user: {
+        email: newUser.email,
+        subscription: newUser.subscription,
+      },
+    });
   } catch (error) {
     if (error.code === 11000) {
       res.status(409).send("Email in use");
@@ -72,26 +77,8 @@ const logoutController = async (req, res, next) => {
   }
 };
 
-const getCurrentUserController = async (req, res, next) => {
-  try {
-    const { user: id } = req;
-    const currentUserById = await UserDB.findUserById(id);
-    if (!currentUserById.token) {
-      res.status(401).json({ message: "Not authorized" });
-      return;
-    }
-    res.status(200).json({
-      email: currentUserById.email,
-      subscription: currentUserById.subscription,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 module.exports = {
   registrationController,
   loginController,
-  getCurrentUserController,
   logoutController,
 };

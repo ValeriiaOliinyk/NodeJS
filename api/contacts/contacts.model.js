@@ -21,7 +21,12 @@ class Contacts {
   }
 
   getContacts = async (query) => {
-    const { limit, page, ...otherQuery } = query;
+    const { limit, page, sub: subscription, ...otherQuery } = query;
+    console.log(subscription);
+    if (subscription) {
+      const info = await this.db.find({ subscription });
+      console.log(info);
+    }
     const skipItems = (page - 1) * limit;
     return await this.db
       .find(otherQuery)
