@@ -25,6 +25,14 @@ class User {
     this.db = mongoose.model("User", userSchema);
   }
 
+  getUsers = async (query) => {
+    const { sub: subscription } = query;
+    if (subscription) {
+      return await this.db.find({ subscription });
+    }
+    // return await this.db.find();
+  };
+
   createUser = async (userData) => {
     return await this.db.create(userData);
   };

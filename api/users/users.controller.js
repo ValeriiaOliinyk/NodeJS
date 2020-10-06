@@ -49,7 +49,30 @@ const updateSubscriptionContoller = async (req, res, next) => {
   }
 };
 
+const getUsersBySubscription = async (req, res, next) => {
+  try {
+    const { query } = req;
+    const users = await UserDB.getUsers(query);
+    if (!users) {
+      res.status(400).json({
+        message: "Subscription not valid",
+      });
+    }
+
+    if (users.length < 1) {
+      res.status(400).json({
+        message: "Users with this subscription not found",
+      });
+    }
+
+    res.json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getCurrentUserController,
   updateSubscriptionContoller,
+  getUsersBySubscription,
 };
