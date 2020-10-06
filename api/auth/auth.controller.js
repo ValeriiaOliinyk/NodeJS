@@ -38,14 +38,14 @@ const loginController = async (req, res, next) => {
     if (!isPasswordsEqual) {
       return res.status(401).send(`Email or password is wrong`);
     }
-    const access_token = await createVerificationToken({ id: user._id });
+    const accessToken = await createVerificationToken({ id: user._id });
 
     await UserDB.updateUser(user._id, {
-      token: access_token,
+      token: accessToken,
     });
 
     res.status(200).json({
-      token: access_token,
+      token: accessToken,
       user: {
         email: user.email,
         subscription: user.subscription,

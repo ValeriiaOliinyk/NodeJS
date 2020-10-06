@@ -30,7 +30,7 @@ class User {
     if (subscription) {
       return await this.db.find({ subscription });
     }
-    // return await this.db.find();
+    return null;
   };
 
   createUser = async (userData) => {
