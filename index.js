@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const authRouter = require("./api/auth/auth.router");
 const contactsRouter = require("./api/contacts/router");
 const usersRouter = require("./api/users/users.router");
+const path = require("path");
 
 const runServer = async () => {
   try {
@@ -21,6 +22,9 @@ const runServer = async () => {
   }
 
   const app = express();
+
+  // Put image
+  app.use(express.static(path.resolve(__dirname, "public")));
 
   app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");

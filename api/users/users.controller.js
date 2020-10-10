@@ -71,8 +71,19 @@ const getUsersBySubscription = async (req, res, next) => {
   }
 };
 
+const uploadImage = async (req, res, next) => {
+  try {
+    const file = req.file;
+    console.log(file);
+    res.end();
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getCurrentUserController,
   updateSubscriptionContoller,
   getUsersBySubscription,
+  uploadImage,
 };
