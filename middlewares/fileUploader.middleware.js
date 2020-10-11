@@ -1,18 +1,26 @@
 const multer = require("multer");
 
-const imageUploader = () => {
+const avatarUploader = () => {
   const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, "/public/images");
+    destination: (req, file, cb) => {
+      cb(null, "public/images");
     },
-    filename: function (req, file, cb) {
-      cb(null, `${req.user}.jpg`);
+    filename: (req, file, cb) => {
+      const type = file.mimetype.split("/")[1];
+      const types = ["jpg", "png", "jpeg"];
+      if (type !== types[0] && type !== types[1] && type !== types[2]) {
+        cb(
+          new Error(
+            `unknown file type, valid types: ${types[0]}, ${types[1]}, ${types[2]}`
+          )
+        );
+      }
+      cb(null, `${"avatar-" + req.user + "." + type}`);
     },
   });
-
-  return multer({ storage }).single("image");
+  return multer({ storage }).single("avatar");
 };
 
 module.exports = {
-  imageUploaderMiddleware: imageUploader(),
+  avatarUpLoaderMiddleware: avatarUploader(),
 };

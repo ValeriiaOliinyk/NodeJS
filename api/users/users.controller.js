@@ -71,11 +71,13 @@ const getUsersBySubscription = async (req, res, next) => {
   }
 };
 
-const uploadImage = async (req, res, next) => {
+const uploadAvatar = async (req, res, next) => {
   try {
     const file = req.file;
-    console.log(file);
-    res.end();
+    const { user: id } = req;
+    const userById = await UserDB.findUserById(id);
+    await UserDB.updateUser(userById._id, { avatar: file.path });
+    res.end(`http://localhost:4040/images/${file.filename}`);
   } catch (error) {
     next(error);
   }
@@ -85,5 +87,5 @@ module.exports = {
   getCurrentUserController,
   updateSubscriptionContoller,
   getUsersBySubscription,
-  uploadImage,
+  uploadAvatar,
 };

@@ -3,13 +3,13 @@ const {
   getCurrentUserController,
   updateSubscriptionContoller,
   getUsersBySubscription,
-  uploadImage,
+  uploadAvatar,
 } = require("./users.controller");
 const {
   checkAuthTokenMiddleware,
 } = require("../../middlewares/auth.middleware");
 const {
-  imageUploaderMiddleware,
+  avatarUpLoaderMiddleware,
 } = require("../../middlewares/fileUploader.middleware");
 
 const usersRouter = Router();
@@ -18,10 +18,10 @@ usersRouter.get("/current", checkAuthTokenMiddleware, getCurrentUserController);
 usersRouter.patch("/", checkAuthTokenMiddleware, updateSubscriptionContoller);
 usersRouter.get("/", checkAuthTokenMiddleware, getUsersBySubscription);
 usersRouter.post(
-  "/images",
+  "/uploadAvatar",
   checkAuthTokenMiddleware,
-  imageUploaderMiddleware,
-  uploadImage
+  avatarUpLoaderMiddleware,
+  uploadAvatar
 );
 
 module.exports = usersRouter;
