@@ -76,8 +76,10 @@ const uploadAvatar = async (req, res, next) => {
     const file = req.file;
     const { user: id } = req;
     const userById = await UserDB.findUserById(id);
+    res.end(
+      `${process.env.HOST + ":" + process.env.PORT}/images/${file.filename}`
+    );
     await UserDB.updateUser(userById._id, { avatar: file.path });
-    res.end(`http://localhost:4040/images/${file.filename}`);
   } catch (error) {
     next(error);
   }

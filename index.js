@@ -19,7 +19,6 @@ const runServer = async () => {
     console.log("Database connection successful");
     const app = express();
 
-    // Put image
     app.use(express.static(path.resolve(__dirname, "public")));
 
     app.use((req, res, next) => {
