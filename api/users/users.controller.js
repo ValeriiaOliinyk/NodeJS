@@ -94,7 +94,7 @@ const updateAvatarController = async (req, res, next) => {
 
     if (!file) {
       res.status(400).json({
-        message: `Avatar is not found`,
+        message: "Avatar was not found",
       });
       return;
     }
