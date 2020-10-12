@@ -1,6 +1,10 @@
 const UserDB = require("../users/users.model");
 const bcrypt = require("bcrypt");
 const { createVerificationToken } = require("../../services/token.service");
+const {
+  createAvatar,
+  updateUserAvatar,
+} = require("../../services/avatar.service");
 
 const registrationController = async (req, res, next) => {
   try {
@@ -10,10 +14,14 @@ const registrationController = async (req, res, next) => {
       ...body,
       password: hashedPassword,
     });
+    const id = await UserDB.findUserByEmail({ email: body.email });
+    await createAvatar(id._id);
+    const userUpdate = await updateUserAvatar(id._id);
     res.status(201).json({
       user: {
         email: newUser.email,
         subscription: newUser.subscription,
+        avatarURL: userUpdate.avatarURL,
       },
     });
   } catch (error) {
