@@ -4,6 +4,7 @@ const {
   updateSubscriptionContoller,
   getUsersBySubscription,
   uploadAvatar,
+  updateAvatarController,
 } = require("./users.controller");
 const {
   checkAuthTokenMiddleware,
@@ -22,6 +23,13 @@ usersRouter.post(
   checkAuthTokenMiddleware,
   avatarUpLoaderMiddleware,
   uploadAvatar
+);
+
+usersRouter.patch(
+  "/avatars",
+  checkAuthTokenMiddleware,
+  avatarUpLoaderMiddleware,
+  updateAvatarController
 );
 
 module.exports = usersRouter;

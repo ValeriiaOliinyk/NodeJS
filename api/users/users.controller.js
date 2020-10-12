@@ -85,9 +85,43 @@ const uploadAvatar = async (req, res, next) => {
   }
 };
 
+const updateAvatarController = async (req, res, next) => {
+  try {
+    const { user: id } = req;
+    const { file } = req;
+
+    const userById = await UserDB.findUserById(id);
+
+    if (!file) {
+      res.status(400).json({
+        message: `Avatar is not found`,
+      });
+      return;
+    }
+
+    if (!userById.token) {
+      res.status(401).json({ message: "Not authorized" });
+      return;
+    }
+
+    const avatarURL = `${process.env.HOST + ":" + process.env.PORT}/images/${
+      file.filename
+    }`;
+
+    await UserDB.updateUser(userById._id, {
+      avatarURL,
+    });
+
+    return res.status(200).json(avatarURL);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getCurrentUserController,
   updateSubscriptionContoller,
   getUsersBySubscription,
   uploadAvatar,
+  updateAvatarController,
 };
