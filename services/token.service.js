@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { v4: uuidv4 } = require("uuid");
 
 const createVerificationToken = async (payload) => {
   const token = await jwt.sign(payload, process.env.ACCESS_KEY);
@@ -10,7 +11,12 @@ const verifyToken = async (token) => {
   return await jwt.verify(parsedToken, process.env.ACCESS_KEY);
 };
 
+const createVerificationTokenEmail = async () => {
+  return uuidv4();
+};
+
 module.exports = {
   createVerificationToken,
   verifyToken,
+  createVerificationTokenEmail,
 };

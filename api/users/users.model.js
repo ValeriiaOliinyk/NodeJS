@@ -52,6 +52,10 @@ class User {
   findUserById = async (userId) => {
     return await this.db.findById(userId);
   };
+
+  findUserByToken = async (token) => {
+    return await this.db.findOne(token);
+  };
 }
 
 module.exports = new User();

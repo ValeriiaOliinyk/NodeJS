@@ -1,18 +1,25 @@
 const UserDB = require("../users/users.model");
 const bcrypt = require("bcrypt");
-const { createVerificationToken } = require("../../services/token.service");
+const {
+  createVerificationToken,
+  createVerificationTokenEmail,
+} = require("../../services/token.service");
 const {
   createAvatar,
   updateUserAvatar,
 } = require("../../services/avatar.service");
+const { sendMail } = require("../../services/mail.service");
 
 const registrationController = async (req, res, next) => {
   try {
     const { body } = req;
+    const token = await createVerificationTokenEmail();
+    await sendMail(body.email, token);
     const hashedPassword = await bcrypt.hash(body.password, +process.env.SALT);
     const newUser = await UserDB.createUser({
       ...body,
       password: hashedPassword,
+      verificationToken: token,
     });
     const id = await UserDB.findUserByEmail({ email: body.email });
     await createAvatar(id._id);
@@ -24,6 +31,7 @@ const registrationController = async (req, res, next) => {
         avatarURL: userUpdate.avatarURL,
       },
     });
+    console.log(token);
   } catch (error) {
     if (error.code === 11000) {
       res.status(409).send("Email in use");
@@ -86,10 +94,17 @@ const logoutController = async (req, res, next) => {
 };
 
 const verificationTokenController = async (req, res, next) => {
+  const {
+    params: { verificationToken },
+  } = req;
   try {
-    const {
-      params: { verificationToken },
-    } = req;
+    const user = await UserDB.findUserByToken({ verificationToken });
+    if (!user) {
+      res.status(404).send("User not found");
+      return;
+    }
+    await UserDB.updateUser(user.id, { verificationToken: null });
+    res.status(200).send("OK");
   } catch (error) {
     res.status(404).json({ message: "User not found" });
     next(error);
@@ -100,4 +115,5 @@ module.exports = {
   registrationController,
   loginController,
   logoutController,
+  verificationTokenController,
 };

@@ -20,7 +20,6 @@ authRouter.post(
   registrationValidatorMiddleware,
   registrationController
 );
-
 authRouter.post("/login", loginValidatorMiddleware, loginController);
 authRouter.post("/logout", checkAuthTokenMiddleware, logoutController);
 authRouter.get("/verify/:verificationToken", verificationTokenController);
