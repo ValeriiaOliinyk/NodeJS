@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
       enum: ["free", "pro", "premium"],
       default: "free",
     },
+    verificationToken: String,
     token: String,
   },
   { versionKey: false }

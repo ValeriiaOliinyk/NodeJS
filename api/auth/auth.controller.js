@@ -85,6 +85,17 @@ const logoutController = async (req, res, next) => {
   }
 };
 
+const verificationTokenController = async (req, res, next) => {
+  try {
+    const {
+      params: { verificationToken },
+    } = req;
+  } catch (error) {
+    res.status(404).json({ message: "User not found" });
+    next(error);
+  }
+};
+
 module.exports = {
   registrationController,
   loginController,
