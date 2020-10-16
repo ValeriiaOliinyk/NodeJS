@@ -31,7 +31,6 @@ const registrationController = async (req, res, next) => {
         avatarURL: userUpdate.avatarURL,
       },
     });
-    console.log(token);
   } catch (error) {
     if (error.code === 11000) {
       res.status(409).send("Email in use");

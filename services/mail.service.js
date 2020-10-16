@@ -4,8 +4,8 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const sendMail = async (email, token) => {
   try {
     const msg = {
-      to: email, // Change to your recipient
-      from: "Di-Neva@bigmir.net", // Change to your verified sender
+      to: email,
+      from: process.env.EMAIL,
       subject: "Email verification",
       text: "Verify Email Addresses",
       html: `<a href="${process.env.HOST}:${process.env.PORT}/auth/verify/${token}">Follow link</a>`,
